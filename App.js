@@ -1,23 +1,31 @@
 import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, FlatList, Image, TextInput } from 'react-native';
+import { View, StyleSheet, FlatList, Image, TextInput, Modal } from 'react-native';
 import { SearchBar, Button, Text, Rating } from 'react-native-elements';
 
 // Import bourbon images
 import bourbon1Image from './assets/woodford.png';
 import bourbon2Image from './assets/peerless.png';
 import bourbon3Image from './assets/angelsenvy.png';
+import bourbon4Image from './assets/blantons.png';
+import bourbon5Image from './assets/makers.png';
+import bourbon6Image from './assets/bulleit.png';
 
 const BourbonApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [bourbons, setBourbons] = useState([
     { id: 1, name: 'Woodford', image: bourbon1Image },
     { id: 2, name: 'Peerless', image: bourbon2Image },
-    { id: 3, name: 'Angels Envy', image: bourbon3Image },
+    { id: 3, name: 'Angels', image: bourbon3Image },
+    { id: 4, name: 'Blantons', image: bourbon4Image },
+    { id: 5, name: 'Makers', image: bourbon5Image },
+    { id: 6, name: 'Bulleit', image: bourbon6Image },
     // Add more 
   ]);
   const [selectedBourbons, setSelectedBourbons] = useState([]);
   const [filteredBourbons, setFilteredBourbons] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage login status
+  const [message, setMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   // Update filtered bourbons whenever searchQuery changes
   useMemo(() => {
@@ -48,6 +56,17 @@ const BourbonApp = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+  };
+
+  const handleAddButtonPress = () => {
+    if (selectedBourbons.length > 0) {
+      setMessage('Bourbon logged');
+      setShowModal(true);
+    }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   const renderBourbonItem = ({ item, index }) => {
@@ -113,22 +132,41 @@ const BourbonApp = () => {
   return (
     <View style={styles.container}>
       <SearchBar
-        placeholder="Search Bourbons"
+        placeholder="Search"
         onChangeText={handleSearch}
         value={searchQuery}
+        inputStyle={styles.searchInput}
       />
       <Text h4 style={styles.heading}>Bourbon List</Text>
       <FlatList
         data={filteredBourbons}
         renderItem={renderBourbonItem}
         keyExtractor={(item) => item.id.toString()}
+        numColumns={2} // Set number of columns to 2
       />
       <Text h4 style={styles.heading}>Selected Bourbons</Text>
       <FlatList
         data={selectedBourbons}
         renderItem={renderBourbonItem}
         keyExtractor={(item) => item.id.toString()}
+        numColumns={2} // Set number of columns to 2
       />
+     {selectedBourbons.length > 0 && (
+      <Button title="Add" onPress={handleAddButtonPress} buttonStyle={styles.button} />
+    )}
+    <Modal
+      visible={showModal}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={closeModal}
+    >
+      <View style={styles.modalView}>
+        <View style={styles.modalContent}>
+          <Text>{message}</Text>
+          <Button title="OK" onPress={closeModal} buttonStyle={styles.button}/>
+        </View>
+      </View>
+    </Modal>
     </View>
   );
 };
@@ -137,8 +175,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
-    margin: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   heading: {
     marginTop: 20,
@@ -147,6 +186,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 10,
+    flex: 1,
+    width: '45%',
+    margin: 5,
   },
   bourbonImage: {
     width: 50,
@@ -157,21 +199,37 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center', // Center buttons horizontally
   },
   button: {
     backgroundColor: 'black',
-    marginRight: 10,
+    marginRight: 5, // Add margin between buttons
   },
   removeButton: {
-    backgroundColor: 'red', 
+    backgroundColor: 'red',
   },
   textInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
-    width: '25%',
+    width: '80%', // Adjust the width of text input
     marginBottom: 5,
-    marginTop:20,
+    marginTop: 20,
+  },
+  searchInput: {
+    backgroundColor: 'white', // Set background color to white
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
   },
 });
 
