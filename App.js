@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, FlatList, Image, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, FlatList, Image, TextInput, Modal, ScrollView } from 'react-native';
 import { SearchBar, Button, Text, Rating } from 'react-native-elements';
 
 // Import bourbon images
@@ -130,48 +130,55 @@ const BourbonApp = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
       <SearchBar
-        placeholder="Search"
-        onChangeText={handleSearch}
-        value={searchQuery}
-        inputStyle={styles.searchInput}
-      />
-      <Text h4 style={styles.heading}>Bourbon List</Text>
-      <FlatList
-        data={filteredBourbons}
-        renderItem={renderBourbonItem}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // Set number of columns to 2
-      />
-      <Text h4 style={styles.heading}>Selected Bourbons</Text>
-      <FlatList
-        data={selectedBourbons}
-        renderItem={renderBourbonItem}
-        keyExtractor={(item) => item.id.toString()}
-        numColumns={2} // Set number of columns to 2
-      />
-     {selectedBourbons.length > 0 && (
-      <Button title="Add" onPress={handleAddButtonPress} buttonStyle={styles.button} />
-    )}
-    <Modal
-      visible={showModal}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={closeModal}
-    >
-      <View style={styles.modalView}>
-        <View style={styles.modalContent}>
-          <Text>{message}</Text>
-          <Button title="OK" onPress={closeModal} buttonStyle={styles.button}/>
+  placeholder="Search"
+  onChangeText={handleSearch}
+  value={searchQuery}
+  inputStyle={styles.searchInput}
+  containerStyle={styles.searchContainer}
+  inputContainerStyle={styles.searchInputContainer}a
+/>
+        <Text h4 style={styles.heading}>Bourbon List</Text>
+        <FlatList
+          data={filteredBourbons}
+          renderItem={renderBourbonItem}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={1} // Set number of columns to 2
+        />
+        <Text h4 style={styles.heading}>Selected Bourbons</Text>
+        <FlatList
+          data={selectedBourbons}
+          renderItem={renderBourbonItem}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={1} // Set number of columns to 2
+        />
+       {selectedBourbons.length > 0 && (
+        <Button title="Add" onPress={handleAddButtonPress} buttonStyle={styles.button} />
+      )}
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalView}>
+          <View style={styles.modalContent}>
+            <Text>{message}</Text>
+            <Button title="OK" onPress={closeModal} buttonStyle={styles.button}/>
+          </View>
         </View>
+      </Modal>
       </View>
-    </Modal>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     padding: 20,
@@ -187,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
     flex: 1,
-    width: '45%',
+    width: '90%',
     margin: 5,
   },
   bourbonImage: {
@@ -224,6 +231,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  searchContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: 'white',
+    borderTopWidth: 0, // Remove top border
+    borderBottomWidth: 0, // Remove bottom border
+  },
+  searchInputContainer: {
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
   },
   modalContent: {
     backgroundColor: 'white',
